@@ -10,7 +10,7 @@ import com.example.todo.services.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1.0/users")
 public class UserController {
 
     private final UserService userService;

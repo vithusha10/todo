@@ -38,7 +38,7 @@ public class Todo {
     @Column(name = "is_completed")
     private Boolean isCompleted = false;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "todo_keyword",
             joinColumns = @JoinColumn(name = "todo_id"),

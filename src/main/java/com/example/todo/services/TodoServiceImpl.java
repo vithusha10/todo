@@ -1,29 +1,42 @@
 package com.example.todo.services;
 
 import com.example.todo.exceptions.UnauthorizedAccessException;
+import com.example.todo.models.Keyword;
 import com.example.todo.models.Todo;
+import com.example.todo.models.User;
+import com.example.todo.repositories.KeywordRepository;
 import com.example.todo.repositories.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
+    private final KeywordRepository keywordRepository;
 
     @Autowired
-    public TodoServiceImpl(TodoRepository todoRepository) {
+    public TodoServiceImpl(TodoRepository todoRepository, KeywordRepository keywordRepository) {
         this.todoRepository = todoRepository;
+        this.keywordRepository = keywordRepository;
     }
 
     @Override
-    public Todo saveTodo(Todo todo, Long userId) {
-        todo.getUser().setId(userId);
-        return todoRepository.save(todo);
+    public Todo saveTodo(Todo todo,  User user) {
+        todo.setUser(user);
+        todo = todoRepository.save(todo);
+        Set<Keyword> keywords = new HashSet<>();
+        todo.getKeywords().forEach(keyword -> {
+            keywords.add(keywordRepository.findById(keyword.getId()).orElse(null));
+        });
+        todo.setKeywords(keywords);
+        return todo;
     }
 
     @Override

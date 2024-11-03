@@ -22,14 +22,18 @@ public class TodoController {
         this.todoService = todoService;
     }
 
+    private User getUser(Authentication authentication) {
+        return (User) authentication.getPrincipal();
+    }
+
     private Long getUserId(Authentication authentication) {
         return ((User) authentication.getPrincipal()).getId();
     }
 
     @PostMapping
     public Todo createTodo(@RequestBody Todo todo, Authentication authentication) {
-        Long userId = getUserId(authentication);
-        return todoService.saveTodo(todo, userId);
+        User user = getUser(authentication);
+        return todoService.saveTodo(todo, user);
     }
 
     @GetMapping("/{id}")
